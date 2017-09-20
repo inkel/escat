@@ -47,9 +47,9 @@ More info at https://www.elastic.co/guide/en/elasticsearch/reference/current/cat
 
 func main() {
 	var (
-		verbose = flag.Bool("verbose", true, "use verbose output (i.e. add a header)")
+		verbose = flag.Bool("v", true, "use verbose output (i.e. add a header)")
 		help    = flag.Bool("help", false, "output available columns")
-		headers = flag.String("headers", "", "force only these columns to appear")
+		headers = flag.String("h", "", "force only these columns to appear")
 		bytes   = flag.String("bytes", "", "use this numeric format instead of 'human' format")
 	)
 
