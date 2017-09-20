@@ -51,6 +51,7 @@ func main() {
 		help    = flag.Bool("help", false, "output available columns")
 		headers = flag.String("h", "", "force only these columns to appear")
 		bytes   = flag.String("bytes", "", "use this numeric format instead of 'human' format")
+		host    = flag.String("H", "http://localhost:9200", "Elasticsearch host to connect to. Must include the protocol.")
 	)
 
 	flag.Usage = func() {
@@ -84,7 +85,17 @@ func main() {
 
 	command := flag.Arg(0)
 
-	esURL := fmt.Sprintf("http://localhost:9200/_cat/%s?%s", command, qs.Encode())
+	base, err := url.Parse(*host)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "cannot parse %v as host: %v\n", *host, err)
+		os.Exit(4)
+	}
+	if base.Scheme != "http" && base.Scheme != "https" {
+		fmt.Fprintf(os.Stderr, "unsupported protocol: %v\n", base.Scheme)
+		os.Exit(4)
+	}
+
+	esURL := base.String() + fmt.Sprintf("/_cat/%s?%s", command, qs.Encode())
 
 	res, err := http.Get(esURL)
 	if err != nil {
